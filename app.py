@@ -142,7 +142,7 @@ def list_users():
 def users_show(user_id):
     """Show user profile."""
     user = User.query.get_or_404(user_id)
-    breakpoint()
+    
     # snagging messages in order from the database;
     # user.messages won't be in order by default
     messages = (Message
