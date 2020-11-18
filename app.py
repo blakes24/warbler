@@ -221,6 +221,20 @@ def like_msg(msg_id):
 
     return redirect("/")
 
+@app.route('/users/un_like/<int:msg_id>', methods=['POST'])
+def unlike_msg(msg_id):
+    """Have currently-logged-in-user stop following this user."""
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    like = Likes.query.filter(Likes.user_id == g.user.id, Likes.message_id == msg_id).first()
+    db.session.delete(like)
+    db.session.commit()
+
+    return redirect("/")
+
 
 @app.route('/users/profile', methods=["GET", "POST"])
 def profile():
