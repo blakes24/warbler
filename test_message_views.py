@@ -51,6 +51,9 @@ class MessageViewTestCase(TestCase):
 
         db.session.commit()
 
+    def tearDown(self):
+        db.session.rollback()
+
     def test_add_message(self):
         """Can use add a message?"""
 
@@ -71,3 +74,102 @@ class MessageViewTestCase(TestCase):
 
             msg = Message.query.one()
             self.assertEqual(msg.text, "Hello")
+
+    def test_show_messages(self):
+        """Can the message be displayed?"""
+
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.testuser.id
+
+            m = Message(
+            id=1111,
+            text="testing 1 2 3",
+            user_id=self.testuser.id)
+        
+            db.session.add(m)
+            db.session.commit()
+
+            resp = c.get("/messages/1111")
+            html = resp.get_data(as_text=True)
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn("testing 1 2 3", html)
+
+    def test_delete_messages(self):
+        """Can the message be deleted?"""
+
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.testuser.id
+
+            m = Message(
+            id=1111,
+            text="testing 1 2 3",
+            user_id=self.testuser.id)
+        
+            db.session.add(m)
+            db.session.commit()
+
+            resp = c.post("/messages/1111/delete")
+            self.assertEqual(resp.status_code, 302)
+
+            m = Message.query.get(1111)
+            self.assertIsNone(m)
+
+    def test_add_message_logged_out(self):
+        """Can logged out user add a message?"""
+
+        with self.client as c:
+            resp = c.post("/messages/new", data={"text": "Hello"})
+
+            self.assertEqual(resp.status_code, 302)
+
+            # message should not be created
+            msg = Message.query.first()
+            self.assertIsNone(msg)
+
+    def test_delete_message_logged_out(self):
+        """Can logged out user delete a message?"""
+
+        with self.client as c:
+            m = Message(
+            id=1111,
+            text="testing 1 2 3",
+            user_id=self.testuser.id)
+        
+            db.session.add(m)
+            db.session.commit()
+
+            resp = c.post("/messages/1111/delete")
+            self.assertEqual(resp.status_code, 302)
+
+            # message should still exist
+            m = Message.query.get(1111)
+            self.assertEqual(m.text, "testing 1 2 3")
+
+    def test_delete_other_user_message(self):
+        """Can logged out user delete a message?"""
+
+        with self.client as c:
+            m = Message(
+                id=1111,
+                text="testing 1 2 3",
+                user_id=self.testuser.id)
+            db.session.add(m)
+            db.session.commit()
+
+            u = User.signup(username="testuser",
+                                    email="test@test.com",
+                                    password="testuser",
+                                    image_url=None)
+
+           
+            resp = c.post("/messages/1111/delete")
+            self.assertEqual(resp.status_code, 302)
+
+            # message should still exist
+            m = Message.query.get(1111)
+            self.assertEqual(m.text, "testing 1 2 3")
+
+
