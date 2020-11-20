@@ -55,7 +55,7 @@ class MessageViewTestCase(TestCase):
         db.session.rollback()
 
     def test_add_message(self):
-        """Can use add a message?"""
+        """Can user add a message?"""
 
         # Since we need to change the session to mimic logging in,
         # we need to use the changing-session trick:
@@ -149,7 +149,7 @@ class MessageViewTestCase(TestCase):
             self.assertEqual(m.text, "testing 1 2 3")
 
     def test_delete_other_user_message(self):
-        """Can logged out user delete a message?"""
+        """Can user delete other user's message?"""
 
         with self.client as c:
             m = Message(
