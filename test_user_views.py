@@ -102,6 +102,19 @@ class MessageViewTestCase(TestCase):
             self.assertEqual(resp.status_code, 200)
             self.assertIn('<div class="card user-card">', html)
 
+    def test_delete_user(self):
+        """Does it delete the user?"""
+
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.testuser_id
+
+            resp = c.post("/users/delete", follow_redirects=True)
+            html = resp.get_data(as_text=True)
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn('User Deleted', html)
+
     def test_users_show(self):
         """Does it display a user detail page?"""
 
