@@ -236,6 +236,7 @@ nav + .container {
 .stat {
 	text-align: center;
 	height: 60px;
+	width: 80px;
 	box-sizing: border-box;
 	padding: 14px 15px 7px;
 	line-height: 1;
@@ -430,7 +431,10 @@ p.card-bio {
 
 #home-aside > .user-card {
 	margin-top: 0;
-	overflow: hidden;
+}
+#home-aside > .card {
+	margin-top: 0;
+	height: 250px;
 }
 
 #home-aside > .user-card .card-link {
@@ -443,7 +447,7 @@ p.card-bio {
 }
 
 #home-aside > .user-card .stat {
-	padding: 14px 0 7px;
+	padding: 10px 5px;
 }
 
 #home-aside > .user-card .user-stats {
