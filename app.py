@@ -224,7 +224,7 @@ def like_msg(msg_id):
 
     if not g.user:
         flash("Access unauthorized.", "danger")
-        return False
+        return redirect("/")
 
     like = Likes(user_id=g.user.id, message_id=msg_id)
     db.session.add(like)
@@ -248,7 +248,7 @@ def unlike_msg(msg_id):
 
 
 @app.route('/users/profile', methods=["GET", "POST"])
-def profile():
+def edit_profile():
     """Update profile for current user."""
 
     if not g.user:
@@ -274,7 +274,7 @@ def profile():
 
         flash("Invalid credentials.", 'danger')
 
-    return render_template('users/edit.html', form=form)   
+    return render_template('users/edit.html', form=form, user_id=g.user.id)   
 
 
 @app.route('/users/delete', methods=["POST"])
