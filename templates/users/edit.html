@@ -3,7 +3,7 @@
 {% block content %}
 
   <div class="row justify-content-md-center">
-    <div class="col-md-4">
+    <div class="col-md-9 col-lg-6">
       <h2 class="join-message">Edit Your Profile.</h2>
       <form method="POST" id="user_form">
         {{ form.hidden_tag() }}
@@ -31,6 +31,11 @@
           <a href="/users/{{ user_id }}" class="btn btn-outline-secondary">Cancel</a>
         </div>
       </form>
+      <div class="container col-6 mt-4">
+        <form method="POST" action="/users/delete">
+            <button class="btn btn-danger">Delete Profile</button>
+          </form>
+      </div>
     </div>
   </div>
 

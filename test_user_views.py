@@ -235,7 +235,7 @@ class MessageViewTestCase(TestCase):
 
             likes = Likes.query.filter(Likes.message_id == 888).first()
 
-            self.assertEqual(resp.status_code, 200)
+            self.assertEqual(resp.status_code, 201)
             self.assertEqual(likes.message_id, 888)
 
     def test_un_like(self):
