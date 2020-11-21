@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template, request, flash, redirect, session, g
+from flask import Flask, render_template, request, flash, redirect, session, g, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 
@@ -224,13 +224,13 @@ def like_msg(msg_id):
 
     if not g.user:
         flash("Access unauthorized.", "danger")
-        return redirect("/")
+        return False
 
     like = Likes(user_id=g.user.id, message_id=msg_id)
     db.session.add(like)
     db.session.commit()
 
-    return redirect("/")
+    return ('Added', 201)
 
 @app.route('/users/un_like/<int:msg_id>', methods=['POST'])
 def unlike_msg(msg_id):
@@ -244,7 +244,7 @@ def unlike_msg(msg_id):
     db.session.delete(like)
     db.session.commit()
 
-    return redirect("/")
+    return 'Removed'
 
 
 @app.route('/users/profile', methods=["GET", "POST"])
